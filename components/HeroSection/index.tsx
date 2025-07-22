@@ -79,7 +79,7 @@ const HeroSection = () => {
             <div className="aspect-[9/16] w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl bg-black relative">
               <video
                 ref={videoRef}
-                src="/your-hero-video.mp4"
+                src="/home.mp4"
                 autoPlay
                 loop
                 muted={muted}
