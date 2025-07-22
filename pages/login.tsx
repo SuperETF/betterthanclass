@@ -12,14 +12,14 @@ const LoginPage: React.FC = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
-            <a
+            <Link
               href="/"
               className="flex items-center text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
               aria-label="뒤로가기"
             >
               <i className="fas fa-arrow-left text-xl mr-2"></i>
               <span className="text-sm font-medium">뒤로가기</span>
-            </a>
+            </Link>
           </div>
         </div>
       </header>

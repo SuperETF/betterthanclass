@@ -1,6 +1,5 @@
-// pages/register.tsx 또는 pages/auth/register.tsx
-
 import React, { useState } from "react";
+import Link from "next/link";
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -63,10 +62,10 @@ const RegisterPage: React.FC = () => {
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-14">
-            <a href="/" className="flex items-center text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">
+            <Link href="/" className="flex items-center text-gray-600 hover:text-purple-600 transition-colors cursor-pointer">
               <i className="fas fa-arrow-left mr-2"></i>
               <span className="text-sm">홈으로 돌아가기</span>
-            </a>
+            </Link>
             <div className="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
               유리한 클래스
             </div>
@@ -196,9 +195,9 @@ const RegisterPage: React.FC = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 이미 계정이 있으신가요?{" "}
-                <a href="/login" className="text-purple-600 hover:text-purple-700 font-medium cursor-pointer">
+                <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium cursor-pointer">
                   로그인하기
-                </a>
+                </Link>
               </p>
             </div>
           </div>

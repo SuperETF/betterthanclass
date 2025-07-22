@@ -1,5 +1,6 @@
 import { Ebook } from "./types";
 import { FaStar } from "react-icons/fa";
+import Image from "next/image";
 
 interface Props {
   book: Ebook;
@@ -7,11 +8,15 @@ interface Props {
 
 const EbookCard = ({ book }: Props) => (
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer max-w-xs w-full mx-auto">
-    <div className="h-80 overflow-hidden">
-      <img
+    <div className="h-80 overflow-hidden relative">
+      <Image
         src={book.image}
         alt={book.title}
+        width={300}
+        height={400}
         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        unoptimized // 외부 이미지면 LCP 최적화 경고 방지, 필요시 priority 추가
+        priority
       />
     </div>
     <div className="p-4 sm:p-6">

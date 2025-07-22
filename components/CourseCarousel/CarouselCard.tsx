@@ -1,5 +1,6 @@
 import { Course } from "./types";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   course: Course;
@@ -8,11 +9,15 @@ interface Props {
 const CarouselCard = ({ course }: Props) => (
   <Link href={`/course/${course.id}`}>
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer max-w-xs w-full mx-auto">
-      <div className="h-48 sm:h-56 overflow-hidden">
-        <img
+      <div className="h-48 sm:h-56 overflow-hidden relative">
+        <Image
           src={course.image}
           alt={course.title}
+          width={400}
+          height={225}
           className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
+          unoptimized // 외부 이미지면 필요
+          priority
         />
       </div>
       <div className="p-4 sm:p-6">
