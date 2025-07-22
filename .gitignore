@@ -1,6 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# node_modules, Yarn, pnpm
 /node_modules
 /.pnp
 .pnp.*
@@ -10,32 +8,40 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+# 환경 변수 (Supabase, Vercel 등)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
 
-# next.js
+# Next.js
 /.next/
 /out/
+next-env.d.ts
 
-# production
+# 빌드/배포/테스트
 /build
+/coverage
 
-# misc
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# macOS, 인증서
 .DS_Store
 *.pem
 
-# debug
+# 로그
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# 기타(자동 생성)
+*.log
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# ⚠️ 환경변수/시크릿/백업파일은 반드시 예외 없이 포함!
