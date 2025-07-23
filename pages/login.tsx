@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
+import Footer from "@/components/Footer"; // <- 공통 Footer import
 
 const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -141,92 +142,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mb-3">
-                유리한 클래스
-              </div>
-              <p className="text-gray-400 text-sm mb-4">
-                최고의 강사진과 함께하는 프리미엄 교육
-              </p>
-              <div className="text-xs text-gray-500 space-y-1">
-                <p>상호명: (주)유리한클래스 | 대표: 김유리</p>
-                <p>사업자등록번호: 123-45-67890</p>
-                <p>이메일: contact@urihan.class</p>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">강좌</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    프로그래밍
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    디자인
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    비즈니스
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">전자책</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    프로그래밍 전자책
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    디자인 전자책
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    비즈니스 전자책
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3">고객지원</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    도움말
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    문의하기
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white cursor-pointer">
-                    이용약관
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-6 text-center">
-            <p className="text-gray-400 text-sm">
-              &copy; 2025 유리한 클래스. 모든 권리 보유.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer /> {/* 하단에 공통 Footer 삽입 */}
     </div>
   );
 };
