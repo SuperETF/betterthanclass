@@ -66,9 +66,6 @@ const RegisterPage: React.FC = () => {
               <i className="fas fa-arrow-left mr-2"></i>
               <span className="text-sm">홈으로 돌아가기</span>
             </Link>
-            <div className="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-              유리한 클래스
-            </div>
             <div className="w-32"></div>
           </div>
         </div>

@@ -1,29 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import ReviewCard from "./ReviewCard";
+import { supabase } from "@/lib/supabaseClient";
 import { Review } from "./types";
 
-const reviews: Review[] = [
-  {
-    name: "김지훈",
-    rating: 5,
-    text: "강의 내용이 정말 훌륭해요! 강사님이 모든 내용을 명확하게 설명해주셨습니다.",
-    course: "리액트 개발",
-  },
-  {
-    name: "이수진",
-    rating: 5,
-    text: "초보자에게 완벽한 강의예요. 몇 주 만에 정말 많이 배웠습니다.",
-    course: "UI/UX 디자인",
-  },
-  {
-    name: "박현우",
-    rating: 4,
-    text: "실용적인 예제와 실습 프로젝트가 매우 좋았습니다.",
-    course: "디지털 마케팅",
-  },
-];
-
 export default function ReviewSection() {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -31,6 +12,19 @@ export default function ReviewSection() {
   const [cardPx, setCardPx] = useState(0);
   const [transition, setTransition] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Supabase에서 최신 리뷰 n개만 불러오기
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const { data } = await supabase
+        .from("reviews")
+        .select("*")
+        .order("id", { ascending: false })
+        .limit(10);
+      setReviews(data || []);
+    };
+    fetchReviews();
+  }, []);
 
   // 반응형: 모바일 판단
   useEffect(() => {
@@ -45,14 +39,14 @@ export default function ReviewSection() {
     if (cardRef.current) {
       setCardPx(cardRef.current.offsetWidth + 16); // 16px은 px-4 여백 포함
     }
-  }, [isMobile]); // 모바일/PC 전환시 다시 측정
+  }, [isMobile, reviews.length]);
 
   // 트랙의 실제 "한 바퀴" 길이(px)
   const realTrackPx = cardPx * reviews.length;
 
   // 무한 슬라이드(픽셀 기반)
   useEffect(() => {
-    if (paused || !realTrackPx) return;
+    if (paused || !realTrackPx || reviews.length === 0) return;
     const tick = () => {
       setProgress((prev) => {
         if (prev + 1 >= realTrackPx) {
@@ -65,7 +59,7 @@ export default function ReviewSection() {
     };
     const interval = setInterval(tick, 16); // 60fps
     return () => clearInterval(interval);
-  }, [paused, realTrackPx]);
+  }, [paused, realTrackPx, reviews.length]);
 
   useEffect(() => {
     if (!transition) {
@@ -105,7 +99,7 @@ export default function ReviewSection() {
             {triple.map((review, idx) => (
               <div
                 ref={idx === 0 ? cardRef : undefined}
-                key={`${idx}-${review.name}`}
+                key={`${idx}-${review.id ?? review.name ?? idx}`}
                 className={
                   isMobile
                     ? "flex-shrink-0 px-2 w-full max-w-xs mx-auto"
@@ -118,6 +112,9 @@ export default function ReviewSection() {
             ))}
           </div>
         </div>
+        {reviews.length === 0 && (
+          <div className="text-center py-8 text-gray-400">등록된 후기가 없습니다.</div>
+        )}
       </div>
     </section>
   );

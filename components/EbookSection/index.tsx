@@ -1,51 +1,68 @@
 import { useState, useEffect } from "react";
 import EbookCard from "./EbookCard";
-import { Ebook } from "./types";
+import { supabase } from "@/lib/supabaseClient";
 
-const ebooks: Ebook[] = [
-  {
-    title: "리액트 완벽 가이드",
-    author: "김태호",
-    price: "₩35,000",
-    rating: 4.8,
-    image: "https://readdy.ai/api/search-image?query=professional%20ebook%20cover%20design%20showing%20modern%20programming%20concept%20with%20React%20logo%20and%20clean%20typography%20on%20gradient%20background%20with%20code%20elements&width=300&height=400&seq=ebook1&orientation=portrait",
-  },
-  {
-    title: "UX 디자인 원칙",
-    author: "이미영",
-    price: "₩28,000",
-    rating: 4.9,
-    image: "https://readdy.ai/api/search-image?query=elegant%20ebook%20cover%20about%20UX%20design%20principles%20with%20minimal%20geometric%20shapes%20and%20modern%20typography%20on%20clean%20background&width=300&height=400&seq=ebook2&orientation=portrait",
-  },
-  {
-    title: "디지털 마케팅 전략",
-    author: "박성준",
-    price: "₩32,000",
-    rating: 4.7,
-    image: "https://readdy.ai/api/search-image?query=professional%20digital%20marketing%20strategy%20ebook%20cover%20with%20modern%20business%20icons%20and%20data%20visualization%20elements%20on%20gradient%20background&width=300&height=400&seq=ebook3&orientation=portrait",
-  },
-  {
-    title: "파이썬 데이터 분석",
-    author: "최지원",
-    price: "₩30,000",
-    rating: 4.8,
-    image: "https://readdy.ai/api/search-image?query=modern%20python%20data%20analysis%20ebook%20cover%20with%20clean%20data%20visualization%20elements%20and%20code%20snippets%20on%20professional%20background&width=300&height=400&seq=ebook4&orientation=portrait",
-  },
-];
+export interface Ebook {
+  id: number;
+  title: string;
+  author: string;
+  price: number;
+  rating: number;
+  image: string;
+  buy_link?: string | null;
+  preview_link?: string | null;
+}
 
 export default function EbookSection() {
+  const [ebooks, setEbooks] = useState<Ebook[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchEbooks = async () => {
+      const { data, error } = await supabase
+        .from("ebooks")
+        .select("id, title, author, price, rating, image, buy_link, preview_link")
+        .order("id", { ascending: true });
+      if (data) setEbooks(data);
+      setLoading(false);
+    };
+    fetchEbooks();
+  }, []);
+
+  // 슬라이드 자동 이동
   useEffect(() => {
     if (ebooks.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % ebooks.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []); // 의존성에 ebooks.length 필요 없음
+  }, [ebooks.length]);
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % ebooks.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + ebooks.length) % ebooks.length);
+
+  if (loading) {
+    return (
+      <section className="py-12 md:py-20 bg-white">
+        <div className="w-full px-0 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">인기 전자책</h2>
+          <div className="py-16 text-gray-400 text-lg">로딩 중...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!ebooks.length) {
+    return (
+      <section className="py-12 md:py-20 bg-white">
+        <div className="w-full px-0 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">인기 전자책</h2>
+          <div className="py-16 text-gray-400 text-lg">등록된 전자책이 없습니다.</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-12 md:py-20 bg-white">
@@ -64,16 +81,16 @@ export default function EbookSection() {
                 minWidth: 0,
               }}
             >
-              {ebooks.map((book, idx) => (
-                <div
-                  key={idx}
-                  className="w-screen flex-shrink-0 flex justify-center items-center"
-                  style={{ minWidth: 0 }}
-                >
-                  <EbookCard book={book} />
-                </div>
-              ))}
-            </div>
+{ebooks.map((book, idx) => (
+  <div
+    key={book.id}
+    className="w-screen flex-shrink-0 flex justify-center items-center"
+    style={{ minWidth: 0 }}
+  >
+    <EbookCard book={book} />
+  </div>
+))}
+            </div>  
           </div>
           {ebooks.length > 1 && (
             <>

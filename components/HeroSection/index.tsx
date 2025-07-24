@@ -22,11 +22,11 @@ const HeroSection = () => {
           {/* 텍스트/버튼 영역 */}
           <div className="flex flex-col items-center lg:items-start text-white w-full">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-2 text-center lg:text-left">
-              빠르게 성장하기<br />
-              <span className="text-yellow-300">유리한 클래스에서</span>
+              유리한 클래스에서<br />
+              <span className="text-yellow-300">빠르게 성장하기</span>
             </h1>
             <p className="text-base md:text-lg lg:text-xl mb-4 text-white/90 leading-relaxed text-center lg:text-left">
-              직접 경험하고 검증된 방법들로 효율적으로 성장할 수 있도록 도와드립니다.
+              효율적으로 성장할 수 있도록 도와드립니다.
             </p>
             {/* 모바일 영상 */}
             <div className="w-full flex flex-col items-center lg:hidden mb-6 relative">

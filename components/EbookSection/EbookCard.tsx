@@ -1,4 +1,4 @@
-import { Ebook } from "./types";
+import type { Ebook } from "./index";
 import { FaStar } from "react-icons/fa";
 import Image from "next/image";
 
@@ -15,7 +15,7 @@ const EbookCard = ({ book }: Props) => (
         width={300}
         height={400}
         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-        unoptimized // 외부 이미지면 LCP 최적화 경고 방지, 필요시 priority 추가
+        unoptimized
         priority
       />
     </div>
@@ -25,17 +25,43 @@ const EbookCard = ({ book }: Props) => (
       </h3>
       <p className="text-gray-600 mb-2">저자: {book.author}</p>
       <div className="flex justify-between items-center">
-        <span className="text-xl sm:text-2xl font-bold text-purple-600">
-          {book.price}
-        </span>
+      <span className="text-xl sm:text-2xl font-bold text-purple-600">
+  ₩{book.price.toLocaleString()}
+</span>
         <div className="flex items-center">
           <FaStar className="text-yellow-400 mr-1" />
           <span className="text-gray-700">{book.rating}</span>
         </div>
       </div>
-      <button className="mt-4 w-full bg-purple-600 text-white py-2 rounded-full hover:bg-purple-700 transition-colors cursor-pointer whitespace-nowrap">
-        구매하기
-      </button>
+      <div className="flex space-x-2 mt-4">
+        {book.preview_link && (
+          <a
+            href={book.preview_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors cursor-pointer whitespace-nowrap text-center"
+          >
+            미리보기
+          </a>
+        )}
+        {book.buy_link ? (
+          <a
+            href={book.buy_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 bg-purple-600 text-white py-2 px-3 rounded-full text-sm font-medium hover:bg-purple-700 transition-colors cursor-pointer whitespace-nowrap text-center"
+          >
+            구매하기
+          </a>
+        ) : (
+          <button
+            className="flex-1 bg-gray-300 text-white py-2 px-3 rounded-full text-sm font-medium cursor-not-allowed"
+            disabled
+          >
+            구매 불가
+          </button>
+        )}
+      </div>
     </div>
   </div>
 );

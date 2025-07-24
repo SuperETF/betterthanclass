@@ -1,44 +1,37 @@
+// components/CourseCarousel/index.tsx
+
 import { useState, useEffect } from "react";
 import CarouselCard from "./CarouselCard";
-import { Course } from "./types";
+import { supabase } from "@/lib/supabaseClient";
 
-const courses: Course[] = [
-  {
-    id: 1,
-    title: "고급 리액트 개발",
-    instructor: "김서연",
-    price: "₩89,000",
-    rating: 4.9,
-    image: "https://readdy.ai/api/search-image?query=modern%20laptop%20displaying%20colorful%20code%20editor%20with%20React%20components%20on%20screen%2C%20clean%20white%20desk%20setup%20with%20soft%20lighting%20and%20minimalist%20background&width=400&height=225&seq=course1&orientation=landscape",
-  },
-  {
-    id: 2,
-    title: "UI/UX 디자인 마스터클래스",
-    instructor: "박준호",
-    price: "₩75,000",
-    rating: 4.8,
-    image: "https://readdy.ai/api/search-image?query=sleek%20design%20workspace%20with%20tablet%20showing%20colorful%20UI%20mockups%20and%20design%20tools%2C%20clean%20white%20background%20with%20soft%20shadows%20and%20modern%20aesthetic&width=400&height=225&seq=course2&orientation=landscape",
-  },
-  {
-    id: 3,
-    title: "디지털 마케팅 전략",
-    instructor: "이지은",
-    price: "₩65,000",
-    rating: 4.7,
-    image: "https://readdy.ai/api/search-image?query=modern%20smartphone%20and%20laptop%20displaying%20analytics%20dashboard%20with%20colorful%20charts%20and%20graphs%2C%20clean%20white%20background%20with%20professional%20lighting&width=400&height=225&seq=course3&orientation=landscape",
-  },
-  {
-    id: 4,
-    title: "파이썬 기초",
-    instructor: "천민우",
-    price: "₩55,000",
-    rating: 4.9,
-    image: "https://readdy.ai/api/search-image?query=clean%20coding%20setup%20with%20monitor%20showing%20Python%20code%20syntax%20highlighting%20in%20vibrant%20colors%2C%20minimal%20white%20desk%20environment%20with%20soft%20lighting&width=400&height=225&seq=course4&orientation=landscape",
-  },
-];
+// Course 타입은 반드시 title 기준
+export interface Course {
+  id: number;
+  title: string;   // title이 표준!
+  instructor: string;
+  price: number;
+  rating: number;
+  image: string;
+  buy_link: string | null;
+}
 
 export default function CourseCarousel() {
+  const [courses, setCourses] = useState<Course[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // supabase에서 강좌 목록 불러오기
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const { data, error } = await supabase
+        .from("courses")
+        .select("id, title, instructor, price, rating, image, buy_link") // 반드시 title 사용
+        .order("id", { ascending: false });
+      setCourses(data || []);
+      setLoading(false);
+    };
+    fetchCourses();
+  }, []);
 
   // 자동 슬라이드(2초)
   useEffect(() => {
@@ -47,10 +40,32 @@ export default function CourseCarousel() {
       setCurrentSlide((prev) => (prev + 1) % courses.length);
     }, 2000);
     return () => clearInterval(interval);
-  }, []); // 의존성 배열에 courses.length 넣을 필요 없음
+  }, [courses.length]);
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % courses.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + courses.length) % courses.length);
+
+  if (loading) {
+    return (
+      <section className="py-12 md:py-20 bg-white">
+        <div className="w-full px-0 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">인기 강좌</h2>
+          <div className="py-16 text-gray-400 text-lg">로딩 중...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!courses.length) {
+    return (
+      <section className="py-12 md:py-20 bg-white">
+        <div className="w-full px-0 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">인기 강좌</h2>
+          <div className="py-16 text-gray-400 text-lg">등록된 강좌가 없습니다.</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-12 md:py-20 bg-white">

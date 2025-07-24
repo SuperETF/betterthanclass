@@ -10,24 +10,24 @@ interface Category {
 const categories: Category[] = [
   {
     title: "유리한 신경계",
-    description: "기초부터 배우는 코딩",
+    description: "복잡한 신경계를 가장 쉽게, 누구나 이해할 수 있게! 풀어주는 기초 신경계 클래스입니다.",
     icon: "fas fa-code",
     image:
-      "https://readdy.ai/api/search-image?query=abstract%20geometric%20programming%20symbols%20and%20code%20patterns%20in%20vibrant%20gradient%20colors%20floating%20in%20clean%20white%20space%20with%20soft%20shadows&width=300&height=200&seq=cat1&orientation=landscape",
+      "/neuro.png",
   },
   {
     title: "통증 핑거 포인트",
-    description: "시각적 창의력 마스터",
+    description: "누구나 따라할 수 있는 손가락 촉진법으로 단순하고 체계적으로 통증의 핵심을 짚어줍니다.",
     icon: "fas fa-palette",
     image:
-      "https://readdy.ai/api/search-image?query=colorful%20design%20tools%20and%20creative%20elements%20arranged%20aesthetically%20on%20clean%20white%20background%20with%20soft%20lighting%20and%20modern%20minimalist%20style&width=300&height=200&seq=cat2&orientation=landscape",
+      "/point.png",
   },
   {
     title: "관리의 시작 MANA.ZIP",
-    description: "경력을 쌓아보세요",
+    description: "경회원 관리, 센터 운영, 데이터 분석까지 현장에서 바로 써먹는 실질적 방법을 쉽고 명확하게 전달합니다.",
     icon: "fas fa-chart-line",
     image:
-      "https://readdy.ai/api/search-image?query=modern%20business%20growth%20charts%20and%20success%20symbols%20in%20vibrant%20colors%20on%20clean%20white%20background%20with%20professional%20lighting%20and%20sleek%20presentation&width=300&height=200&seq=cat3&orientation=landscape",
+      "/mana.png",
   },
 ];
 

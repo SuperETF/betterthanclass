@@ -10,7 +10,7 @@ const Footer = () => (
               색다른 강사진과 함께하는 프리미엄 교육
             </p>
             <div className="text-sm text-gray-400 space-y-2">
-              <p>상호명: 유리한클래스 | 대표: 채정욱</p>
+              <p>상호명: 유리한클래스 | JACOB I chaejeonguk U eunbi</p>
               <p>사업자등록번호: 652-58-00651</p>
               <p>통신판매업신고: 2023-서울강서-1449</p>
               <p>주소: 서울특별시 강서구 화곡로 305</p>

@@ -88,10 +88,14 @@ const LoginPage: React.FC = () => {
 
               {/* Forgot Password Link */}
               <div className="text-right">
-                <a href="#" className="text-sm text-purple-600 hover:text-purple-800 cursor-pointer">
-                  비밀번호 찾기
-                </a>
-              </div>
+  <Link
+    href="/forgot-password"
+    className="text-sm text-purple-600 hover:text-purple-800 cursor-pointer"
+  >
+    비밀번호 찾기
+  </Link>
+</div>
+
             </div>
 
             {/* Login Button */}

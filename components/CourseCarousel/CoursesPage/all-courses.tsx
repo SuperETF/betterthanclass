@@ -1,83 +1,54 @@
-// components/all-courses.tsx
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-
-// 1. 하드코딩된 강의 데이터 (API 연동 전)
-const allCourses = [
-  {
-    id: 1,
-    title: "고급 리액트 개발 마스터클래스",
-    instructor: "김서연",
-    price: "₩89,000",
-    originalPrice: "₩120,000",
-    rating: 4.9,
-    students: 2847,
-    category: "프로그래밍",
-    image:
-      "https://readdy.ai/api/search-image?query=modern%20laptop%20displaying%20colorful%20React%20code%20editor%20with%20components%20on%20screen%2C%20clean%20white%20desk%20setup%20with%20soft%20lighting%20and%20minimalist%20background&width=400&height=225&seq=course1&orientation=landscape",
-  },
-  {
-    id: 2,
-    title: "UI/UX 디자인 완벽 가이드",
-    instructor: "박준호",
-    price: "₩75,000",
-    originalPrice: "₩95,000",
-    rating: 4.8,
-    students: 1923,
-    category: "디자인",
-    image:
-      "https://readdy.ai/api/search-image?query=sleek%20design%20workspace%20with%20tablet%20showing%20colorful%20UI%20mockups%20and%20design%20tools%2C%20clean%20white%20background%20with%20soft%20shadows%20and%20modern%20aesthetic&width=400&height=225&seq=course2&orientation=landscape",
-  },
-  {
-    id: 3,
-    title: "디지털 마케팅 전략 A to Z",
-    instructor: "이지은",
-    price: "₩65,000",
-    originalPrice: "₩85,000",
-    rating: 4.7,
-    students: 3156,
-    category: "마케팅",
-    image:
-      "https://readdy.ai/api/search-image?query=modern%20smartphone%20and%20laptop%20displaying%20analytics%20dashboard%20with%20colorful%20charts%20and%20graphs%2C%20clean%20white%20background%20with%20professional%20lighting&width=400&height=225&seq=course3&orientation=landscape",
-  },
-  {
-    id: 4,
-    title: "파이썬 기초부터 실전까지",
-    instructor: "천민우",
-    price: "₩55,000",
-    originalPrice: "₩70,000",
-    rating: 4.9,
-    students: 4521,
-    category: "프로그래밍",
-    image:
-      "https://readdy.ai/api/search-image?query=clean%20coding%20setup%20with%20monitor%20showing%20Python%20code%20syntax%20highlighting%20in%20vibrant%20colors%2C%20minimal%20white%20desk%20environment%20with%20soft%20lighting&width=400&height=225&seq=course4&orientation=landscape",
-  }
-];
+import { supabase } from "@/lib/supabaseClient";
 
 const categories = [
-  "전체",
-  "프로그래밍",
-  "디자인",
-  "비즈니스",
-  "마케팅",
-  "데이터 사이언스",
-  "언어",
+  "전체", "신경계", "디자인", "비즈니스", "마케팅", "데이터 사이언스", "언어",
 ];
 const sortOptions = ["인기순", "가격순", "평점순", "최신순"];
 
+export interface Course {
+  id: number;
+  name: string;               // ← title → name
+  instructor: string;
+  price: number;
+  original_price: number;
+  rating: number;
+  students: number;
+  category: string;
+  image: string;
+  buy_link?: string | null;   // ← buy_link 추가
+}
+
 const AllCourses: React.FC = () => {
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [sortBy, setSortBy] = useState("인기순");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Supabase에서 강좌 목록 fetch
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const { data, error } = await supabase
+        .from("courses")
+        .select(
+          "id, name, instructor, price, original_price, rating, students, category, image, buy_link"
+        )
+        .order("id", { ascending: false });
+      setAllCourses(data || []);
+      setLoading(false);
+    };
+    fetchCourses();
+  }, []);
 
   const filteredCourses = allCourses.filter((course) => {
     const matchesCategory =
       selectedCategory === "전체" || course.category === selectedCategory;
     const matchesSearch =
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.instructor.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -85,15 +56,12 @@ const AllCourses: React.FC = () => {
   const sortedCourses = [...filteredCourses].sort((a, b) => {
     switch (sortBy) {
       case "가격순":
-        return (
-          parseInt(a.price.replace(/[^\d]/g, "")) -
-          parseInt(b.price.replace(/[^\d]/g, ""))
-        );
+        return a.price - b.price;
       case "평점순":
         return b.rating - a.rating;
       case "최신순":
         return b.id - a.id;
-      default:
+      default: // 인기순
         return b.students - a.students;
     }
   });
@@ -109,8 +77,10 @@ const AllCourses: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans"
-      style={{ fontFamily: 'Pretendard, "Noto Sans KR", sans-serif' }}>
+    <div
+      className="min-h-screen bg-white font-sans"
+      style={{ fontFamily: 'Pretendard, "Noto Sans KR", sans-serif' }}
+    >
       {/* Header */}
       <section className="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -201,62 +171,80 @@ const AllCourses: React.FC = () => {
       {/* Course Grid */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {currentCourses.map((course) => (
-              <div
-                key={course.id}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
-              >
-                <div className="h-48 overflow-hidden relative">
-                  <Image
-                    src={course.image}
-                    alt={course.title}
-                    width={400}
-                    height={225}
-                    className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-5">
-                  <div className="mb-2">
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-600 rounded-full">
-                      {course.category}
-                    </span>
+          {loading ? (
+            <div className="text-center py-20 text-lg text-gray-400">로딩 중...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {currentCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                >
+                  <div className="h-48 overflow-hidden relative">
+                    <Image
+                      src={course.image}
+                      alt={course.name}
+                      width={400}
+                      height={225}
+                      className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                    {course.title}
-                  </h3>
-                  <p className="text-gray-600 mb-3">by {course.instructor}</p>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      <i className="fas fa-star text-yellow-400 mr-1"></i>
-                      <span className="text-gray-700 font-medium">
-                        {course.rating}
-                      </span>
-                      <span className="text-gray-500 text-sm ml-2">
-                        ({course.students.toLocaleString()}명)
+                  <div className="p-5">
+                    <div className="mb-2">
+                      <span className="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-600 rounded-full">
+                        {course.category}
                       </span>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-2xl font-bold text-purple-600">
-                        {course.price}
-                      </span>
-                      {course.originalPrice && (
-                        <span className="text-sm text-gray-500 line-through ml-2">
-                          {course.originalPrice}
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                      {course.name}
+                    </h3>
+                    <p className="text-gray-600 mb-3">by {course.instructor}</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center">
+                        <i className="fas fa-star text-yellow-400 mr-1"></i>
+                        <span className="text-gray-700 font-medium">
+                          {course.rating}
                         </span>
-                      )}
+                        <span className="text-gray-500 text-sm ml-2">
+                          ({course.students.toLocaleString()}명)
+                        </span>
+                      </div>
                     </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-2xl font-bold text-purple-600">
+                          ₩{course.price.toLocaleString()}
+                        </span>
+                        {course.original_price && (
+                          <span className="text-sm text-gray-500 line-through ml-2">
+                            ₩{course.original_price.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {course.buy_link ? (
+                      <a
+                        href={course.buy_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full mt-4 bg-purple-600 text-white py-2 !rounded-button hover:bg-purple-700 transition-colors cursor-pointer whitespace-nowrap text-center block"
+                      >
+                        수강하기
+                      </a>
+                    ) : (
+                      <button
+                        className="w-full mt-4 bg-gray-300 text-white py-2 !rounded-button cursor-not-allowed"
+                        disabled
+                      >
+                        수강 불가
+                      </button>
+                    )}
                   </div>
-                  <button className="w-full mt-4 bg-purple-600 text-white py-2 !rounded-button hover:bg-purple-700 transition-colors cursor-pointer whitespace-nowrap">
-                    수강하기
-                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
-          {currentCourses.length === 0 && (
+              ))}
+            </div>
+          )}
+          {!loading && currentCourses.length === 0 && (
             <div className="text-center py-16">
               <i className="fas fa-search text-6xl text-gray-300 mb-4"></i>
               <h3 className="text-xl font-semibold text-gray-600 mb-2">
