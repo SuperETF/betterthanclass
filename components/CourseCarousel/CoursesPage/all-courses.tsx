@@ -38,6 +38,10 @@ const AllCourses: React.FC = () => {
           "id, name, instructor, price, original_price, rating, students, category, image, buy_link"
         )
         .order("id", { ascending: false });
+      if (error) {
+        // 개발 시 콘솔로그로 처리, 운영은 토스트 등으로 교체 가능
+        console.error("강좌 목록을 불러오는 중 오류 발생:", error);
+      }
       setAllCourses(data || []);
       setLoading(false);
     };

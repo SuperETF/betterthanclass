@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
+export interface Review {
+  id: number;
+  author: string;
+  rating: number;
+  date: string;
+  course: string;
+  content: string;
+}
+
 const AllReview: React.FC = () => {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const { data } = await supabase.from("reviews").select("*").order("id", { ascending: false });
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*")
+        .order("id", { ascending: false });
+      if (error) {
+        console.error("후기 불러오기 오류:", error);
+      }
       setReviews(data || []);
       setLoading(false);
     };
@@ -35,7 +50,6 @@ const AllReview: React.FC = () => {
               key={review.id}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer group"
             >
-              {/* 리뷰 카드 구조 (ReviewCard 분리도 OK) */}
               <div className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-1">
                   {review.author}

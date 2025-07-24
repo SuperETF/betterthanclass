@@ -24,11 +24,15 @@ export default function EbookSection() {
         .from("ebooks")
         .select("id, title, author, price, rating, image, buy_link, preview_link")
         .order("id", { ascending: true });
+      if (error) {
+        console.error("전자책 불러오기 오류:", error);
+      }
       if (data) setEbooks(data);
       setLoading(false);
     };
     fetchEbooks();
   }, []);
+  
 
   // 슬라이드 자동 이동
   useEffect(() => {

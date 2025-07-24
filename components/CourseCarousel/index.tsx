@@ -25,13 +25,17 @@ export default function CourseCarousel() {
     const fetchCourses = async () => {
       const { data, error } = await supabase
         .from("courses")
-        .select("id, title, instructor, price, rating, image, buy_link") // 반드시 title 사용
+        .select("id, title, instructor, price, rating, image, buy_link")
         .order("id", { ascending: false });
+      if (error) {
+        console.error("강좌 불러오기 오류:", error);
+      }
       setCourses(data || []);
       setLoading(false);
     };
     fetchCourses();
   }, []);
+  
 
   // 자동 슬라이드(2초)
   useEffect(() => {

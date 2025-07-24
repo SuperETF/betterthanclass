@@ -29,11 +29,15 @@ const AllEbook: React.FC = () => {
           "id, title, author, price, original_price, rating, review_count, category, image, description, buy_link, preview_link"
         )
         .order("id", { ascending: true });
+      if (error) {
+        console.error("전자책 불러오기 오류:", error);
+      }
       if (data) setEbooks(data);
       setLoading(false);
     };
     fetchEbooks();
   }, []);
+  
 
   if (loading) {
     return (
